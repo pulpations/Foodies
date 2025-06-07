@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Delicious Food Recipes</title>
+  <style>
+    /* CSS Variables */
+    :root {
+      --clr-bg-dark: #121217;
+      --clr-bg-dark-2: #1e1e28;
+      --clr-bg-dark-3: #272833;
+      --clr-primary: #ff6f61;
+      --clr-primary-hover: #ff5846;
+      --clr-text-light: #e0e0e0;
+      --clr-text-muted: #9a9bab;
+      --shadow-card: 0 4px 12px rgb(255 111 97 / 0.3);
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --radius: 0.75rem;
+      --font-family: 'Poppins', sans-serif;
+    }
+    /* Dark mode vars fallback */
+    [data-theme="light"] {
+      --clr-bg-dark: #fefefe;
+      --clr-bg-dark-2: #f6f7f9;
+      --clr-bg-dark-3: #e3e6ef;
+      --clr-primary: #d84444;
+      --clr-primary-hover: #a72f2f;
+      --clr-text-light: #171717;
+      --clr-text-muted: #5a5a5a;
+      --shadow-card: 0 4px 12px rgb(216 68 68 / 0.25);
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+    /* Reset and base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background: var(--clr-bg-dark);
+      color: var(--clr-text-light);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: var(--clr-primary);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    a:hover, a:focus {
+      color: var(--clr-primary-hover);
+      outline: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--clr-bg-dark-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+      z-index: 1000;
+      backdrop-filter: saturate(180%) blur(14px);
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--clr-primary);
+      letter-spacing: 0.05em;
+      user-select: none;
+      cursor: default;
+    }
+    nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    nav a {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--clr-text-light);
+      position: relative;
+    }
+    nav a::after {
+      content: "";
+      display: block;
+      width: 0%;
+      height: 2px;
+      background: var(--clr-primary);
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      transition: width var(--transition);
+      border-radius: 1px;
+    }
+    nav a:hover::after,
+    nav a:focus::after {
+      width: 100%;
+    }
+    /* Theme toggle button */
+    .theme-toggle {
+      background: none;
+      border: 2px solid var(--clr-primary);
+      border-radius: var(--radius);
+      color: var(--clr-primary);
+      padding: 0.25rem 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--transition), color var(--transition);
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .theme-toggle:hover,
+    .theme-toggle:focus {
+      background-color: var(--clr-primary);
+      color: var(--clr-bg-dark);
+      outline: none;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #ff6f61ee 0%, #ffb88cee 100%);
+      padding: 6rem 2rem 4rem;
+      border-radius: 0 0 var(--radius) var(--radius);
+      text-align: center;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 3rem;
+      color: #fff;
+      user-select: none;
+    }
+    .hero h1 {
+      font-weight: 800;
+      font-size: 3.5rem;
+      line-height: 1.1;
+      max-width: 700px;
+      margin: 0 auto 1rem;
+      letter-spacing: 0.05em;
+      text-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+    }
+    .hero p {
+      font-weight: 400;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-shadow: 0 1px 4px rgb(0 0 0 / 0.2);
+    }
+    .btn-primary {
+      background-color: var(--clr-bg-dark);
+      color: var(--clr-primary);
+      font-weight: 700;
+      border: none;
+      padding: 1.15rem 3rem;
+      font-size: 1.2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgb(255 111 97 / 0.5);
+      transition: background-color var(--transition), color var(--transition), transform var(--transition);
+      user-select: none;
+    }
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background-color: var(--clr-primary);
+      color: var(--clr-bg-dark);
+      transform: scale(1.05);
+      outline: none;
+      box-shadow: 0 8px 25px rgb(255 111 97 / 0.7);
+    }
+
+    /* Section Headers */
+    h2.section-title {
+      font-weight: 800;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--clr-primary);
+      user-select: none;
+      text-align: center;
+    }
+
+    /* Recipes Grid */
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 4rem;
+    }
+
+    /* Recipe Card */
+    .card {
+      background: var(--clr-bg-dark-3);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      user-select: none;
+    }
+    .card:hover,
+    .card:focus-within {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 28px rgb(255 111 97 / 0.6);
+      outline: none;
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      user-select: none;
+    }
+    .card-content {
+      padding: 1.25rem 1.5rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin: 0 0 0.5rem;
+      color: var(--clr-primary);
+      user-select: text;
+    }
+    .card-desc {
+      font-weight: 400;
+      font-size: 1rem;
+      color: var(--clr-text-muted);
+      margin-bottom: 1.2rem;
+      user-select: text;
+      flex-grow: 1;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tag {
+      background: var(--clr-primary);
+      color: var(--clr-bg-dark);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.7rem;
+      border-radius: var(--radius);
+      user-select: none;
+    }
+
+    /* Modal Overlay */
+    #modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgb(18 18 23 / 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: saturate(180%) blur(12px);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2000;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    #modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal-content {
+      background: var(--clr-bg-dark-2);
+      border-radius: var(--radius);
+      max-width: 700px;
+      width: 100%;
+      color: var(--clr-text-light);
+      box-shadow: var(--shadow-card);
+      padding: 2rem;
+      position: relative;
+      user-select: text;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      color: var(--clr-text-muted);
+      cursor: pointer;
+      transition: color var(--transition);
+      font-weight: 700;
+      user-select: none;
+    }
+    .modal-close:hover,
+    .modal-close:focus {
+      color: var(--clr-primary);
+      outline: none;
+    }
+    .modal-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      user-select: text;
+      color: var(--clr-primary);
+    }
+    .modal-section {
+      margin-bottom: 1.5rem;
+    }
+    .modal-section h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--clr-primary);
+    }
+    .modal-section ul {
+      list-style-type: disc;
+      margin-left: 1.2rem;
+      color: var(--clr-text-light);
+      user-select: text;
+    }
+    .modal-section p {
+      user-select: text;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding: 2rem 0;
+      background: var(--clr-bg-dark-2);
+      text-align: center;
+      color: var(--clr-text-muted);
+      font-weight: 500;
+      user-select: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 2.25rem;
+      }
+      .btn-primary {
+        padding: 1rem 2.2rem;
+        font-size: 1rem;
+      }
+      nav {
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <div class="logo" aria-label="Delicious Food Recipes logo">Foodies</div>
+    <nav role="navigation" aria-label="Primary Navigation">
+      <a href="#featured">Featured</a>
+      <a href="#categories">Categories</a>
+      <a href="#about">About</a>
+    </nav>
+    <button class="theme-toggle" aria-label="Toggle light and dark theme" id="themeToggle">
+      🌙 Dark
+    </button>
+  </header>
+
+  <section class="hero" role="banner" aria-label="Welcome to Foodies recipes page">
+    <h1>Discover Delicious Recipes to Nourish Your Soul</h1>
+    <p>Explore curated recipes from global cuisines. Simple, tasty, and crafted for every skill level.</p>
+    <button class="btn-primary" id="scrollToFeatured">Browse Recipes</button>
+  </section>
+
+  <main class="container">
+    <section id="featured" aria-label="Featured Recipes" tabindex="-1">
+      <h2 class="section-title">Featured Recipes</h2>
+      <div class="recipes-grid" id="recipesGrid">
+        <!-- Recipe cards inserted by JS -->
+      </div>
+    </section>
+
+    <section id="categories" aria-label="Recipe Categories" tabindex="-1">
+      <h2 class="section-title">Recipe Categories</h2>
+      <div class="recipes-grid" id="categoriesGrid">
+        <!-- Categories inserted by JS -->
+      </div>
+    </section>
+
+    <section id="about" aria-label="About Foodies website" tabindex="-1" style="margin-bottom: 4rem;">
+      <h2 class="section-title">About Foodies</h2>
+      <p style="max-width: 650px; margin-left: auto; margin-right: auto; color: var(--clr-text-muted); font-size: 1rem; line-height: 1.6;">
+        Foodies is your go-to place for delicious, easy-to-follow recipes from around the world. Whether you're a beginner cook or a seasoned chef, our vibrant community and vast recipe collection have something to inspire every meal.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Foodies. All rights reserved.
+  </footer>
+
+  <!-- Recipe Detail Modal -->
+  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close recipe details" id="modalClose">&times;</button>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-section" id="modalDescription"></div>
+      <div class="modal-section" id="modalIngredients">
+        <h3>Ingredients</h3>
+        <ul></ul>
+      </div>
+      <div class="modal-section" id="modalSteps">
+        <h3>Preparation Steps</h3>
+        <ul></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle functionality
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const body = document.body;
+
+    function setTheme(theme) {
+      body.setAttribute('data-theme', theme);
+      themeToggleBtn.textContent = theme === 'dark' ? '🌙 Dark' : '☀️ Light';
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      const current = body.getAttribute('data-theme');
+      const nextTheme = current === 'dark' ? 'light' : 'dark';
+      setTheme(nextTheme);
+      localStorage.setItem('preferredTheme', nextTheme);
+    });
+
+    // Load preferred theme if any
+    const preferredTheme = localStorage.getItem('preferredTheme');
+    if (preferredTheme) {
+      setTheme(preferredTheme);
+    } else {
+      // Detect system preference as fallback
+      const systemPrefDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(systemPrefDark ? 'dark' : 'light');
+    }
+
+    // Sample recipes data
+    const recipes = [
+      {
+        id: 1,
+        name: 'Spaghetti Carbonara',
+        desc: 'Classic Italian pasta with creamy egg sauce and pancetta.',
+        image: 'https://images.unsplash.com/photo-1603133872872-921daf44818d?auto=format&fit=crop&w=600&q=80',
+        ingredients: [
+          '200g spaghetti',
+          '100g pancetta',
+          '2 large eggs',
+          '50g Parmesan cheese, grated',
+          '2 cloves garlic',
+          'Salt and black pepper',
+          'Olive oil'
+        ],
+        steps: [
+          'Cook spaghetti according to package instructions until al dente.',
+          'Fry pancetta with minced garlic in olive oil until crispy.',
+          'Beat eggs and mix with grated Parmesan cheese.',
+          'Drain pasta and combine with pancetta and garlic.',
+          'Remove from heat, add egg-cheese mixture quickly, stirring to coat pasta without scrambling eggs.',
+          'Season with salt and pepper, serve immediately.'
+        ],
+        tags: ['Italian', 'Pasta', 'Quick']
+      },
+      {
+        id: 2,
+        name: 'Avocado Toast',
+        desc: 'Simple and healthy breakfast with ripe avocado on toast.',
+        image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80',
+        ingredients: [
+          '2 slices whole grain bread',
+          '1 ripe avocado',
+          '1 tsp lemon juice',
+          'Salt and pepper',
+          'Red chili flakes (optional)',
+          'Olive oil'
+        ],
+        steps: [
+          'Toast the bread slices to your liking.',
+          'Mash the avocado with lemon juice, salt, and pepper.',
+          'Spread mashed avocado on toast.',
+          'Sprinkle red chili flakes and drizzle olive oil if desired.',
+          'Serve immediately.'
+        ],
+        tags: ['Breakfast', 'Healthy', 'Vegan']
+      },
+      {
+        id: 3,
+        name: 'Chicken Tikka Masala',
+        desc: 'Flavorful Indian curry with marinated chicken in creamy tomato sauce.',
+        image: 'https://images.unsplash.com/photo-1604908397304-f66102f745a9?auto=format&fit=crop&w=600&q=80',
+        ingredients: [
+          '500g chicken breast, cubed',
+          '150g yogurt',
+          '2 tbsp tikka masala spice mix',
+          '1 onion, chopped',
+          '3 cloves garlic',
+          '1 inch ginger, grated',
+          '400g canned tomatoes',
+          '200ml cream',
+          'Cilantro for garnish',
+          'Oil'
+        ],
+        steps: [
+          'Marinate chicken with yogurt and tikka masala spices for at least 1 hour.',
+          'Heat oil and sauté onion, garlic, and ginger until soft.',
+          'Add marinated chicken and cook until sealed.',
+          'Pour in canned tomatoes and simmer until chicken is cooked through.',
+          'Stir in cream, cook for another 5 minutes.',
+          'Garnish with chopped cilantro before serving.'
+        ],
+        tags: ['Indian', 'Curry', 'Spicy']
+      }
+    ];
+
+    // Sample categories data
+    const categories = [
+      { id: 'italian', name: 'Italian', color: '#ff6f61' },
+      { id: 'breakfast', name: 'Breakfast', color: '#ffd166' },
+      { id: 'indian', name: 'Indian', color: '#06d6a0' },
+      { id: 'dessert', name: 'Dessert', color: '#ef476f' },
+      { id: 'vegan', name: 'Vegan', color: '#118ab2' },
+      { id: 'quick', name: 'Quick & Easy', color: '#073b4c' }
+    ];
+
+    // Render recipe cards
+    const recipesGrid = document.getElementById('recipesGrid');
+    recipes.forEach(recipe => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `View details for recipe ${recipe.name}`);
+      card.innerHTML = `
+        <img src="${recipe.image}" alt="Image of ${recipe.name}" loading="lazy" />
+        <div class="card-content">
+          <h3 class="card-title">${recipe.name}</h3>
+          <p class="card-desc">${recipe.desc}</p>
+          <div class="card-tags">
+            ${recipe.tags.map(tag => `<span class="tag" style="background-color:${getTagColor(tag)}">${tag}</span>`).join('')}
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => openModal(recipe));
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModal(recipe);
+        }
+      });
+      recipesGrid.appendChild(card);
+    });
+
+    // Render categories
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    categories.forEach(cat => {
+      const catCard = document.createElement('div');
+      catCard.className = 'card';
+      catCard.style.textAlign = 'center';
+      catCard.style.padding = '2rem 1rem';
+      catCard.style.background = cat.color + '33'; // translucent
+      catCard.style.boxShadow = 'none';
+      catCard.innerHTML = `
+        <h3 class="card-title" style="color:${cat.color}; user-select:text;">${cat.name}</h3>
+      `;
+      categoriesGrid.appendChild(catCard);
+    });
+
+    // Helper for tag colors fallback
+    function getTagColor(tag) {
+      const map = {
+        'Italian': '#ff6f61',
+        'Pasta': '#f97316',
+        'Quick': '#fb923c',
+        'Breakfast': '#ffd166',
+        'Healthy': '#06d6a0',
+        'Vegan': '#118ab2',
+        'Indian': '#ef476f',
+        'Curry': '#d90429',
+        'Spicy': '#dc2626'
+      };
+      return map[tag] || '#777777';
+    }
+
+    // Modal functionality
+    const modal = document.getElementById('modal');
+    const modalCloseBtn = document.getElementById('modalClose');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalIngredients = document.getElementById('modalIngredients').querySelector('ul');
+    const modalSteps = document.getElementById('modalSteps').querySelector('ul');
+
+    function openModal(recipe) {
+      modalTitle.textContent = recipe.name;
+      modalDescription.textContent = recipe.desc;
+
+      modalIngredients.innerHTML = '';
+      recipe.ingredients.forEach(ing => {
+        const li = document.createElement('li');
+        li.textContent = ing;
+        modalIngredients.appendChild(li);
+      });
+
+      modalSteps.innerHTML = '';
+      recipe.steps.forEach(step => {
+        const li = document.createElement('li');
+        li.textContent = step;
+        modalSteps.appendChild(li);
+      });
+
+      modal.classList.add('active');
+      modal.focus();
+      prevFocused = document.activeElement; // track focus before modal open
+    }
+    modalCloseBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+    let prevFocused;
+    function closeModal() {
+      modal.classList.remove('active');
+      if (prevFocused) prevFocused.focus();
+    }
+
+    // Scroll to featured recipes on hero button click
+    const scrollToFeaturedBtn = document.getElementById('scrollToFeatured');
+    scrollToFeaturedBtn.addEventListener('click', () => {
+      const featured = document.getElementById('featured');
+      if (featured) featured.scrollIntoView({ behavior: 'smooth' });
+      featured.focus();
+    });
+  </script>
+</body>
+</html>
+
